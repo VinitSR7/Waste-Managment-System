@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Garbage Predictor</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <style>
+      @import url(//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css);
+      @font-face {
+        font-family: 'Source Code Pro';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Source Code Pro Regular'), local('SourceCodePro-Regular'),
+          url(https://fonts.gstatic.com/s/sourcecodepro/v11/HI_SiYsKILxRpg3hIP6sJ7fM7PqlPevT.ttf)
+            format('truetype');
+      }
+      @font-face {
+        font-family: 'Source Code Pro';
+        font-style: normal;
+        font-weight: 500;
+        src: local('Source Code Pro Medium'), local('SourceCodePro-Medium'),
+          url(https://fonts.gstatic.com/s/sourcecodepro/v11/HI_XiYsKILxRpg3hIP6sJ7fM7PqtzsjDs-cv.ttf)
+            format('truetype');
+      }
+      @-webkit-keyframes roll {
+        0% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 0;
+          -webkit-transform: translate(-150%, -50%) rotate(-90deg) scale(0.3);
+          transform: translate(-150%, -50%) rotate(-90deg) scale(0.3);
+          box-shadow: none;
+        }
+        100% {
+          opacity: 1;
+          -webkit-transform: translate(-50%, -50%) rotate(0deg) scale(1);
+          transform: translate(-50%, -50%) rotate(0deg) scale(1);
+          box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+        }
+      }
+      @keyframes roll {
+        0% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 0;
+          -webkit-transform: translate(-150%, -50%) rotate(-90deg) scale(0.3);
+          transform: translate(-150%, -50%) rotate(-90deg) scale(0.3);
+          box-shadow: none;
+        }
+        100% {
+          opacity: 1;
+          -webkit-transform: translate(-50%, -50%) rotate(0deg) scale(1);
+          transform: translate(-50%, -50%) rotate(0deg) scale(1);
+          box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+        }
+      }
+      body {
+        background-image: url('/static/images/image.jpg');
+      }
+      * {
+        box-sizing: border-box;
+      }
+      .wrapper {
+        -webkit-animation: roll 1.5s;
+        animation: roll 1.5s;
+        position: fixed;
+        left: 50%;
+        top: 40%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        padding: 25px;
+        background: #16a085;
+        border-radius: 50%;
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+      }
+
+      .wrapper:active #img-result {
+        margin-top: 2px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      }
+      .wrapper #img-result {
+        cursor: pointer;
+        margin: 0;
+        position: relative;
+        background: #1abc9c;
+        background-size: cover;
+        background-position: center;
+        display: block;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+        color: rgba(0, 0, 0, 0);
+        transition: box-shadow 0.3s, margin 0.3s, background-image 1.5s;
+      }
+      .wrapper #img-result.no-image:before {
+        font-family: 'FontAwesome';
+        content: '\f1c5';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        color: #fff;
+        font-size: 48px;
+        opacity: 0.8;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        text-shadow: 0 0px 5px rgba(0, 0, 0, 0.4);
+      }
+      .wrapper button {
+        margin-top: 20px;
+        display: block;
+        font-family: 'Open Sans Condensed', sans-serif;
+        background: #1abc9c;
+        width: 100%;
+        border: none;
+        color: #fff;
+        padding: 10px;
+        letter-spacing: 1.3px;
+        font-size: 1.05em;
+        border-radius: 5px;
+        box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
+        outline: 0;
+        transition: box-shadow 0.3s, margin-top 0.3s, padding 0.3s;
+      }
+      .wrapper button:active {
+        box-shadow: none;
+        margin-top: 24px;
+        padding: 8px;
+      }
+
+      .upload-result {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        overflow-y: auto;
+      }
+      .upload-result__content {
+        word-break: break-all;
+        font-family: 'Source Code Pro';
+        overflow-wrap: break-word;
+      }
+
+      .wrapper-button {
+        position: fixed;
+        left: 40%;
+        top: 60%;
+        padding: 25px;
+        background: #16a085;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <form method="post" enctype="multipart/form-data">
+      <input id="file-button"  style="display: none;" type="file" name="file">
+      <button class="wrapper-button" type="submit">
+        <i class="fa fa-upload" aria-hidden="true"></i>
+        Upload
+      </button>
+    </form>
+
+    <h1 style="text-align: center;"><u>Garbage Predictor</u></h1>
+    <div class="wrapper">
+      <button class="no-image" id="img-result">Upload Image</button>
+    </div>
+    <div class="upload-result">
+      <pre class="upload-result__content"></pre>
+    </div>
+
+    
+    
+
+    <button
+      class="wrapper-button"
+      style="position: fixed;
+    left: 50%;
+    top: 60%;
+    padding: 25px;
+    background: #16a085;
+    border-radius: 5px;"
+    >
+      <a href="/camera" style="text-decoration: none; color: black; ">
+        <i class="fa fa-camera" aria-hidden="true"></i>
+        Camera</a
+      >
+    </button>
+
+    <button
+      id = "loc"
+      class="wrapper-button"
+      style="position: fixed;
+      left: 60%;
+      top: 35%;
+      padding: 25px;
+      background: #16a085;
+      border-radius: 5px;"
+      >
+      <i class="fa fa-map-marker" aria-hidden="true"></i>
+      Location:</a
+      >
+    </button>
+
+    <script>
+      image = document.getElementById('img-result');
+        file = document.getElementById("file-button");
+        image.onclick = function() {
+          file.click();
+        };
+
+
+      let btn = document.querySelector('.wrapper-button');
+      btn.addEventListener('click', () => {
+        // image.style.backgroundImage = '';
+        // window.location.href = '/';
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        }
+        function showPosition(position) {
+          x =
+            '<br>Latitude: ' +
+            position.coords.latitude +
+            '<br>Longitude: ' +
+            position.coords.longitude;
+          console.log(x);
+          document.getElementById("loc").innerHTML += x;
+        }
+      });
+    </script>
+  </body>
+</html>

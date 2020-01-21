@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Garbage Predictor</title>
+    <style>
+      @import url(//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css);
+      @font-face {
+        font-family: 'Source Code Pro';
+        font-style: normal;
+        font-weight: 400;
+        src: local('Source Code Pro Regular'), local('SourceCodePro-Regular'),
+          url(https://fonts.gstatic.com/s/sourcecodepro/v11/HI_SiYsKILxRpg3hIP6sJ7fM7PqlPevT.ttf)
+            format('truetype');
+      }
+      @font-face {
+        font-family: 'Source Code Pro';
+        font-style: normal;
+        font-weight: 500;
+        src: local('Source Code Pro Medium'), local('SourceCodePro-Medium'),
+          url(https://fonts.gstatic.com/s/sourcecodepro/v11/HI_XiYsKILxRpg3hIP6sJ7fM7PqtzsjDs-cv.ttf)
+            format('truetype');
+      }
+      @-webkit-keyframes roll {
+        0% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 0;
+          -webkit-transform: translate(-150%, -50%) rotate(-90deg) scale(0.3);
+          transform: translate(-150%, -50%) rotate(-90deg) scale(0.3);
+          box-shadow: none;
+        }
+        100% {
+          opacity: 1;
+          -webkit-transform: translate(-50%, -50%) rotate(0deg) scale(1);
+          transform: translate(-50%, -50%) rotate(0deg) scale(1);
+          box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+        }
+      }
+      @keyframes roll {
+        0% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 0;
+          -webkit-transform: translate(-150%, -50%) rotate(-90deg) scale(0.3);
+          transform: translate(-150%, -50%) rotate(-90deg) scale(0.3);
+          box-shadow: none;
+        }
+        100% {
+          opacity: 1;
+          -webkit-transform: translate(-50%, -50%) rotate(0deg) scale(1);
+          transform: translate(-50%, -50%) rotate(0deg) scale(1);
+          box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+        }
+      }
+      body {
+        background-image: url('/static/images/image.jpg');
+      }
+      * {
+        box-sizing: border-box;
+      }
+
+      .upload-result {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        overflow-y: auto;
+      }
+      .upload-result__content {
+        word-break: break-all;
+        font-family: 'Source Code Pro';
+        overflow-wrap: break-word;
+      }
+
+      .wrapper-button {
+        position: fixed;
+        left: 46.5%;
+        top: 60%;
+        padding: 25px;
+        background: #16a085;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 style="text-align: center;"><u>Garbage Predictor</u></h1>
+
+    <video id="video" width="640" height="480" autoplay></video>
+    <br />
+    <button id="snap">Snap Photo</button>
+    <canvas
+      id="canvas"
+      width="640"
+      height="480"
+      style="padding: 0;
+      margin: auto;
+      display: block;
+      width: 800px;
+      height: 600px;
+      position: absolute;"
+    ></canvas>
+
+    <button
+      id = "loc"
+      class="wrapper-button"
+      style="position: fixed;
+      left: 70%;
+      top: 35%;
+      padding: 25px;
+      background: #16a085;
+      border-radius: 5px;"
+      >
+      <i class="fa fa-map-marker" aria-hidden="true"></i>
+
+      Location:</a
+      >
+    </button>
+
+    <script>
+      var video = document.getElementById('video');
+      image = document.querySelector('#img-result');
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then(function(stream) {
+            video.srcObject = stream;
+            video.play();
+          });
+      }
+
+      var canvas = document.getElementById('canvas');
+      var context = canvas.getContext('2d');
+      var video = document.getElementById('video');
+
+      document.getElementById('snap').addEventListener('click', function() {
+        context.drawImage(video, 0, 0, 640, 480);
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        }
+        function showPosition(position) {
+          x =
+            '<br>Latitude: ' +
+            position.coords.latitude +
+            '<br/>Longitude: ' +
+            position.coords.longitude;
+          console.log(x);
+          document.getElementById("loc").innerHTML += x;
+        }
+      });
+    </script>
+  </body>
+</html>

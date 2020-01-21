@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Garbage Found</title>
+</head>
+
+<body>
+    <img src='http://127.0.0.1:5000/static/uploads/{{image}}' style=" display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 350px;">
+    <button id="predict" class="wrapper-button" style="position: fixed;
+    left: 45%;
+    top: 70%;
+    padding: 25px;
+    background: #16a085;
+    border-radius: 5px;">
+        <i class="fa fa-camera" aria-hidden="true"></i>
+        Predict
+    </button>
+
+    <h2 id="message" style="text-align: center;display: none">{{msg}}</h2>
+
+</body>
+<script>
+    document.getElementById("predict").addEventListener('click', function () {
+        document.getElementById("message").style.display = "block";
+    })
+</script>
+
+</html>
